@@ -47,9 +47,19 @@
 					</div>
 				</div>
 			</form>
-			<c:if test="${loginError != null}">
+			<c:if test="${loginError == 1}">
 			<div class="alert alert-danger" role="alert" id="loginErrorAlert">
         		<strong>账号或密码错误</strong>
+    		</div>
+    		</c:if>
+    		<c:if test="${loginError == 2}">
+			<div class="alert alert-danger" role="alert" id="loginErrorAlert">
+        		<strong>请输入用户名</strong>
+    		</div>
+    		</c:if>
+    		<c:if test="${loginError == 3}">
+			<div class="alert alert-danger" role="alert" id="loginErrorAlert">
+        		<strong>请输入密码</strong>
     		</div>
     		</c:if>
 		</div>

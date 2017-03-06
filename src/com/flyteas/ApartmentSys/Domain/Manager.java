@@ -15,6 +15,8 @@ public class Manager
 	private String username; //用户名
 	@Column(length = 32)
 	private String password; //密码  MD5加salt加密
+	@Column
+	private int role; //权限 0系统管理员 1公寓管理员
 	@Column(length = 32)
 	private String realName; //真实姓名
 	@Column
@@ -33,16 +35,30 @@ public class Manager
 		
 	}
 	
-	public Manager(String username,String password,String realName,int sex,String phone)
+	public Manager(String username,String password,int role,String realName,int sex,String phone)
 	{
 		createTime = System.currentTimeMillis(); //创建时间
 		this.username = username;
 		this.password = password;
+		this.role = role;
 		this.realName = realName;
 		this.sex = sex;
 		this.phone = phone;
 	}
 
+	public Manager clone() //生成一个对象副本并返回
+	{
+		Manager manager = new Manager();
+		manager.setCreateTime(this.getCreateTime());
+		manager.setLastLoginIP(this.getLastLoginIP());
+		manager.setLastLoginTime(this.getLastLoginTime());
+		manager.setPassword(this.getPassword());
+		manager.setPhone(this.getPhone());
+		manager.setRealName(this.getRealName());
+		manager.setSex(this.getSex());
+		manager.setUsername(this.getUsername());
+		return manager;
+	}
 	/* setter和getter */
 	public String getUsername() {
 		return username;
@@ -60,6 +76,14 @@ public class Manager
 		this.password = password;
 	}
 
+	public int getRole() {
+		return role;
+	}
+
+	public void setRole(int role) {
+		this.role = role;
+	}
+	
 	public String getRealName() {
 		return realName;
 	}

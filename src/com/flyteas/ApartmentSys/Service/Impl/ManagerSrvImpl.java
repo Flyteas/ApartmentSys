@@ -75,8 +75,10 @@ public class ManagerSrvImpl implements ManagerSrv
 
 	@Transactional
 	@Override
-	public boolean add(Manager manager) 
+	public boolean add(String username,String password,int role,String realName,int sex,String phone) 
 	{
+		String pwdMD5 = MD5Encryptor.md5Encrypt(password); //对密码进行MD5
+		Manager manager = new Manager(username,pwdMD5,role,realName,sex,phone);
 		return managerDao.add(manager);
 	}
 
@@ -85,6 +87,32 @@ public class ManagerSrvImpl implements ManagerSrv
 	public boolean delByUsername(String username) 
 	{
 		return managerDao.delete(username);
+	}
+
+	@Override
+	public List<Manager> findByUnameRname(String keyword) 
+	{
+		if(keyword.isEmpty()) //搜索关键字为空则返回所有记录
+		{
+			return managerDao.getAll();
+		}
+		return managerDao.findByUnameRname(keyword);
+	}
+
+	@Override
+	public boolean checkUsernameUsed(String username) 
+	{
+		if(managerDao.getByUsername(username) != null) //用户名已使用
+		{
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public Manager getByUsername(String username) 
+	{
+		return managerDao.getByUsername(username);
 	}
 
 }

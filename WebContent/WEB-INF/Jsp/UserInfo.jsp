@@ -61,53 +61,59 @@
 		<div class="col-md-3 column">
 		</div>
 		<div class="col-md-6 column">
-			<table class="table table-bordered">
-				<thead>
-					<tr>
-						<th>
-							当前用户
-						</th>
-						<th>
-							${user.realName}
-						</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr class="success">
-						<td>
-							用户角色
-						</td>
-						<td>
-							<c:if test="${user.role == 0}">
-							系统管理员
-							</c:if>
-							<c:if test="${user.role == 1}">
-							公寓管理员
-							</c:if>
-						</td>
-					</tr>
-					<tr class="success">
-						<td>
-							上次登陆时间
-						</td>
-						<td>
-							${lastLoginDateStr}
-						</td>
-					</tr>	
-					<tr class="success">
-						<td>
-							上次登陆IP
-						</td>
-						<td>
-							${user.lastLoginIP}
-						</td>
-					</tr>	
-				</tbody>
-			</table>
-		</div>
-		<div class="col-md-3 column">
+			<form class="form-horizontal" role="form" action="UserInfo.do" method="post">
+				<div class="form-group">
+					 <label class="col-sm-2 control-label" for="displayUsername">用户名</label>
+					<div class="col-sm-7">
+						<input class="form-control" id="username" type="text" value="${user.username}" disabled />
+					</div>
+				</div>
+				<div class="form-group">
+					 <label class="col-sm-2 control-label" for="inputRealName">真实姓名</label>
+					<div class="col-sm-7">
+						<input class="form-control" id="realName" name="realName" type="text" value="${user.realName}" />
+					</div>
+				</div>
+				<div class="form-group">
+					 <label class="col-sm-2 control-label" for="inputSex">用户性别</label>
+					<div class="col-sm-7">
+						<select class="form-control" id="sex" name="sex" >
+							<option value="0" <c:if test="${user.sex == '0'}"> selected="selected" </c:if>>男</option>
+							<option value="1" <c:if test="${user.sex == '1'}"> selected="selected" </c:if>>女</option>
+						</select>	
+					</div>
+				</div>
+				<div class="form-group">
+					 <label class="col-sm-2 control-label" for="inputPhone">联系电话</label>
+					<div class="col-sm-7">
+						<input class="form-control" id="phone" name="phone" value="${user.phone}" type="text" />
+					</div>
+				</div>
+				<div class="form-group">
+					 <label class="col-sm-2 control-label" for="displayCreateTime">创建时间</label>
+					<div class="col-sm-7">
+						<input class="form-control" id="createTime" type="text" value="${createTimeStr}" disabled />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-offset-2 col-sm-10">
+						 <button class="btn btn-success btn-lg" type="submit">修改信息</button>
+					</div>
+				</div>
+			</form>
+    		<c:if test="${msg == '0'}">
+			<div class="alert alert-success" role="alert" id="modifyResultAlert">
+        		<strong>修改成功</strong>
+    		</div>
+    		</c:if>
+    		<c:if test="${msg == '1'}">
+			<div class="alert alert-danger" role="alert" id="modifyResultAlert">
+        		<strong>修改失败</strong>
+    		</div>
+    		</c:if>
 		</div>
 	</div>
 </div>
+
 </body>
 </html>

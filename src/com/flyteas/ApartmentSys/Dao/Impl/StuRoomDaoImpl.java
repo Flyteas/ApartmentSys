@@ -116,7 +116,6 @@ public class StuRoomDaoImpl implements StuRoomDao
 		return true;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public int delByStudent(Student student) 
 	{

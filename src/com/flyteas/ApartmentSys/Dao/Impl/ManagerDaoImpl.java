@@ -44,6 +44,7 @@ public class ManagerDaoImpl implements ManagerDao
 		managerOld.setUsername(manager.getUsername());
 		managerOld.setLastLoginIP(manager.getLastLoginIP());
 		managerOld.setLastLoginTime(manager.getLastLoginTime());
+		managerOld.setRole(manager.getRole());
 		manager.setLastLoginIP(lastLoginIP);
 		manager.setLastLoginTime(System.currentTimeMillis());
 		saveModify(manager);
@@ -91,6 +92,7 @@ public class ManagerDaoImpl implements ManagerDao
 	{
 		try
 		{
+			ht.clear();
 			ht.update(manager);
 		}
 		catch(HibernateException e)
@@ -136,5 +138,13 @@ public class ManagerDaoImpl implements ManagerDao
 			return false;
 		}
 		return true;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Manager> findByUnameRname(String keyword) 
+	{
+		String hql = "from Manager where username like ? or realName like ?";
+		return (List<Manager>)ht.find(hql,"%"+keyword+"%", "%"+keyword+"%");
 	}
 }

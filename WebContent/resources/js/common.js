@@ -192,19 +192,19 @@ function checkClassStuAdd(form)
 	return true;
 }
 
-function checkTeacherAdd(form)
+function checkManagerAdd(form)
 {
-	if(form.techId.value == null || form.techId.value == "")
+	if(form.username.value == null || form.username.value == "")
 	{
-		alert("教师ID不能为空");
+		alert("用户名不能为空");
 		return false;
 	}
-	if(form.techRealName.value == null || form.techRealName.value == "")
+	if(form.realName.value == null || form.realName.value == "")
 	{
 		alert("真实姓名不能为空");
 		return false;
 	}
-	if(form.techPassword.value == null || form.techPassword.value == "")
+	if(form.password.value == null || form.password.value == "")
 	{
 		alert("登陆密码不能为空");
 		return false;
@@ -222,14 +222,22 @@ function checkTeacherModify(form)
 	return true;
 }
 
-function modifyTeacherSubmit(modifyUrl)
+function modifyManagerSubmit(modifyUrl)
 {
 	window.open(modifyUrl);
 }
 
-function delTeacherSubmit(delUrl,techName)
+function delManagerSubmit(delUrl,realName)
 {
-	if(confirm('确定删除教师 '+techName+' ?'))
+	if(confirm('确定删除管理员 '+realName+' ?'))
+	{
+		location.href(delUrl);
+	}
+}
+
+function delManagerSelf(delUrl,realName) //删除当前登陆账号
+{
+	if(confirm('确定删除当前登陆用户 '+realName+' ?\n删除成功后会注销当前登陆!'))
 	{
 		location.href(delUrl);
 	}

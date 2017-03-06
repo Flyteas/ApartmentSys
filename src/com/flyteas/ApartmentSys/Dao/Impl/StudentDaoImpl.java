@@ -41,7 +41,7 @@ public class StudentDaoImpl implements StudentDao
 	public List<Student> getAllByRoom(Room room) 
 	{
 		List<Student> stuList = new ArrayList<Student>();
-		List<StuRoom> stuRoomList = stuRoomDao.getByRoom(room);
+		List<StuRoom> stuRoomList = stuRoomDao.getAllByRoom(room);
 		if(stuRoomList != null)
 		{
 			for(int i=0;i<stuRoomList.size();i++)
@@ -142,7 +142,7 @@ public class StudentDaoImpl implements StudentDao
 	public List<Student> getCurrByRoom(Room room) 
 	{
 		List<Student> stuList = new ArrayList<Student>();
-		List<StuRoom> stuRoomList = stuRoomDao.getByRoom(room);
+		List<StuRoom> stuRoomList = stuRoomDao.getCurrByRoom(room);
 		if(stuRoomList != null)
 		{
 			for(int i=0;i<stuRoomList.size();i++)
