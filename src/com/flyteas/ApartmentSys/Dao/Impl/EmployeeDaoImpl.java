@@ -3,8 +3,11 @@ package com.flyteas.ApartmentSys.Dao.Impl;
 import java.util.List;
 
 import org.hibernate.HibernateException;
+import org.hibernate.Query;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.hibernate4.HibernateCallback;
 import org.springframework.orm.hibernate4.HibernateTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -88,6 +91,7 @@ public class EmployeeDaoImpl implements EmployeeDao
 	{
 		try
 		{
+			ht.clear();
 			ht.update(employee);
 		}
 		catch(HibernateException e)
@@ -114,5 +118,72 @@ public class EmployeeDaoImpl implements EmployeeDao
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public long getAllSize() 
+	{
+		String hql = "select count(*) from Employee";
+		Long result = (Long) ht.find(hql).listIterator().next();
+		return result.intValue();
+	}
+
+	@Override
+	public List<Employee> findByIdOrName(String keyword, int page, int pageSize) 
+	{
+		final String hql = "from Employee where empId like ? or name like ?";
+		final String keywordParam = keyword;
+		final int pageParam = page;
+		final int pageSizeParam = pageSize;
+		List<Employee> empList = ht.execute(new HibernateCallback<List<Employee>>()
+		{
+			public List<Employee> doInHibernate(Session session) throws HibernateException 
+			{
+				Query query = session.createQuery(hql);
+				query.setString(0, "%"+keywordParam+"%");
+				query.setString(1, "%"+keywordParam+"%");
+				query.setFirstResult((pageParam-1)*pageSizeParam); //计算分页起始位置
+				if(pageSizeParam > 0)
+				{
+					query.setMaxResults(pageSizeParam); //分页大小
+				}
+				@SuppressWarnings("unchecked")
+				List<Employee> empListRes = query.list();
+				return empListRes;
+			}
+		});
+		return empList;
+	}
+
+	@Override
+	public long findByIdOrNameSize(String keyword) 
+	{
+		String hql = "select count(*) from Employee where empId like ? or name like ?";
+		Long result = (Long) ht.find(hql,"%"+keyword+"%", "%"+keyword+"%").listIterator().next();
+		return result.intValue();
+	}
+
+	@Override
+	public List<Employee> getAll(int page, int pageSize) 
+	{
+		final String hql = "from Employee";
+		final int pageParam = page;
+		final int pageSizeParam = pageSize;
+		List<Employee> empList = ht.execute(new HibernateCallback<List<Employee>>()
+		{
+			public List<Employee> doInHibernate(Session session) throws HibernateException 
+			{
+				Query query = session.createQuery(hql);
+				query.setFirstResult((pageParam-1)*pageSizeParam); //计算分页起始位置
+				if(pageSizeParam > 0)
+				{
+					query.setMaxResults(pageSizeParam); //分页大小
+				}
+				@SuppressWarnings("unchecked")
+				List<Employee> empListRes = query.list();
+				return empListRes;
+			}
+		});
+		return empList;
 	}
 }

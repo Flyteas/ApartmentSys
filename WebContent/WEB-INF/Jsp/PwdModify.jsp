@@ -29,6 +29,12 @@
 						<li>
 							 <a href="Student.do">学生管理</a>
 						</li>
+						<li>
+							 <a href="VisitRecord.do">访客管理</a>
+						</li>
+						<li>
+							 <a href="StudentAccess.do">门禁管理</a>
+						</li>
 						<c:if test="${user.role == 0}">
 						<li>
 							 <a href="Manager.do">管理员管理</a>
@@ -43,7 +49,7 @@
 									 <a href="UserInfo.do">个人资料</a>
 								</li>
 								<li>
-									 <a href="PwdMidify.do">修改密码</a>
+									 <a href="PwdModify.do">修改密码</a>
 								</li>
 								<li class="divider">
 								</li>

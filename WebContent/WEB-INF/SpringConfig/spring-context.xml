@@ -32,7 +32,7 @@
 	<beans:bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
 		destroy-method="close">
 		<beans:property name="driverClassName" value="com.mysql.jdbc.Driver" />
-		<beans:property name="url" value="jdbc:mysql://db.flyteas.com/apartmentsys?useUnicode=true&amp;characterEncoding=UTF-8" />
+		<beans:property name="url" value="jdbc:mysql://127.0.0.1/apartmentsys?useUnicode=true&amp;characterEncoding=UTF-8" />
 		<beans:property name="username" value="apartmentsys" />
 		<beans:property name="password" value="apartmentsys@flyshit!" />
 	</beans:bean> 
@@ -57,7 +57,7 @@
 	</beans:bean> 
 	<!--	设置事务由annotation配置-->
 	
-	<tx:annotation-driven transaction-manager="transactionManager" />
+	<tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true" />
 
 	
 </beans:beans>

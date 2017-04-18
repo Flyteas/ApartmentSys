@@ -30,12 +30,13 @@ public class StuAccessRecord
 		
 	}
 	
-	public StuAccessRecord(Student student,Apartment apartment)
+	public StuAccessRecord(Student student,Apartment apartment,int type)
 	{
-		id = MD5Encryptor.md5Encrypt(String.valueOf(System.nanoTime())); //对当前nano time进行MD5摘要得出ID
+		id = MD5Encryptor.md5Encrypt(String.valueOf(System.nanoTime())).substring(8, 24); //对当前nano time进行MD5摘要并取中间16位得出ID
 		accessTime = System.currentTimeMillis(); //门禁记录时间
 		this.student = student;
 		this.apartment = apartment;
+		this.type = type;
 	}
 
 	/* setter和getter */
@@ -69,5 +70,13 @@ public class StuAccessRecord
 
 	public void setAccessTime(long accessTime) {
 		this.accessTime = accessTime;
+	}
+	
+	public int getType() {
+		return type;
+	}
+
+	public void setType(int type) {
+		this.type = type;
 	}
 }

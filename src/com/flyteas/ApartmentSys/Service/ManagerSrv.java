@@ -15,6 +15,8 @@ public interface ManagerSrv
 	public List<Manager> findByUsername(String username); //通过用户名查找 模糊查找
 	public List<Manager> findByRealName(String realName); //通过真实姓名查找 模糊查找
 	public List<Manager> findByUnameRname(String keyword); //通过用户名或姓名 模糊查找
+	public List<Manager> findByUnameRname(String keyword,int page,int pageSize); //通过用户名或姓名 模糊查找 分页 page当前需要的页 pageSize 每页大小 page为1 pageSize为0则返回所有记录
+	public long findByUnameRnameSize(String keyword); //通过用户名或姓名 模糊查找 返回结果数量
 	public boolean add(String username,String password,int role,String realName,int sex,String phone); //添加新管理员
 	public boolean delByUsername(String username); //根据用户名删除管理员
 	public boolean checkUsernameUsed(String username); //检查用户名是否已经被使用，已被使用返回true

@@ -3,8 +3,11 @@ package com.flyteas.ApartmentSys.Dao.Impl;
 import java.util.List;
 
 import org.hibernate.HibernateException;
+import org.hibernate.Query;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.hibernate4.HibernateCallback;
 import org.springframework.orm.hibernate4.HibernateTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -32,17 +35,35 @@ public class RoomDaoImpl implements RoomDao
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Room> getByApartment(Apartment apartment) 
+	public List<Room> getByApartment(Apartment apartment,int page,int pageSize) 
 	{
-		String hql = "from Room where apartment = ?";
-		return (List<Room>)ht.find(hql, apartment);
+		final String hql = "from Room where apartment = ? order by name asc";
+		final Apartment apt = apartment;
+		final int pageParam = page;
+		final int pageSizeParam = pageSize;
+		List<Room> roomList = ht.execute(new HibernateCallback<List<Room>>()
+		{
+			public List<Room> doInHibernate(Session session) throws HibernateException 
+			{
+				Query query = session.createQuery(hql);
+				query.setParameter(0, apt);
+				query.setFirstResult((pageParam-1)*pageSizeParam); //计算分页起始位置
+				if(pageSizeParam > 0)
+				{
+					query.setMaxResults(pageSizeParam); //分页大小
+				}
+				List<Room> roomListRes = query.list();
+				return roomListRes;
+			}
+		});
+		return roomList;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Room> getEmptyRoom() 
 	{
-		String hql = "from Room where currentAmout = 0";
+		String hql = "from Room where currentAmout = 0 order by name asc";
 		return (List<Room>)ht.find(hql);
 	}
 
@@ -50,7 +71,7 @@ public class RoomDaoImpl implements RoomDao
 	@Override
 	public List<Room> getNotFullRoom() 
 	{
-		String hql = "from Room where currentAmout < capacity";
+		String hql = "from Room where currentAmout < capacity order by name asc";
 		return (List<Room>)ht.find(hql);
 	}
 
@@ -58,7 +79,7 @@ public class RoomDaoImpl implements RoomDao
 	@Override
 	public List<Room> getFullRoom() 
 	{
-		String hql = "from Room where currentAmout = capacity";
+		String hql = "from Room where currentAmout = capacity order by name asc";
 		return (List<Room>)ht.find(hql);
 	}
 
@@ -66,7 +87,7 @@ public class RoomDaoImpl implements RoomDao
 	@Override
 	public List<Room> findByRoomName(String name) 
 	{
-		String hql = "from Room where name like ?";
+		String hql = "from Room where name like ? order by name asc";
 		return (List<Room>)ht.find(hql,"%"+name+"%");
 	}
 
@@ -75,6 +96,7 @@ public class RoomDaoImpl implements RoomDao
 	{
 		try
 		{
+			room.getApartment().capacityAdd(room.getCapacity());
 			ht.save(room);
 		}
 		catch(HibernateException e)
@@ -90,6 +112,7 @@ public class RoomDaoImpl implements RoomDao
 		try
 		{
 			ht.update(room);
+			ht.flush();
 		}
 		catch(HibernateException e)
 		{
@@ -108,6 +131,8 @@ public class RoomDaoImpl implements RoomDao
 		}
 		try
 		{
+			room.getApartment().capacitySub(room.getCapacity());
+			room.getApartment().usedCapSub(room.getCurrentAmout());
 			ht.delete(room);
 		}
 		catch(HibernateException e)
@@ -120,10 +145,12 @@ public class RoomDaoImpl implements RoomDao
 	@Override
 	public int delByApartment(Apartment apartment) 
 	{
-		List<Room> roomList = getByApartment(apartment);
+		List<Room> roomList = getByApartment(apartment,1,0);
 		if(roomList != null && !roomList.isEmpty())
 		{
 			ht.deleteAll(roomList);
+			apartment.setCapacity(0);
+			apartment.setUsedCapacity(0);
 			return roomList.size();
 		}
 		return 0;
@@ -133,7 +160,7 @@ public class RoomDaoImpl implements RoomDao
 	@Override
 	public List<Room> getEmptyRoomByApt(Apartment apartment) 
 	{
-		String hql = "from Room where apartment = ? and currentAmout = 0";
+		String hql = "from Room where apartment = ? and currentAmout = 0 order by name asc";
 		return (List<Room>)ht.find(hql,apartment);
 	}
 
@@ -141,7 +168,7 @@ public class RoomDaoImpl implements RoomDao
 	@Override
 	public List<Room> getNotFullRoomByApt(Apartment apartment) 
 	{
-		String hql = "from Room where apartment = ? and currentAmout < capacity";
+		String hql = "from Room where apartment = ? and currentAmout < capacity order by name asc";
 		return (List<Room>)ht.find(hql,apartment);
 	}
 
@@ -149,16 +176,53 @@ public class RoomDaoImpl implements RoomDao
 	@Override
 	public List<Room> getFullRoomByApt(Apartment apartment) 
 	{
-		String hql = "from Room where apartment = ? and currentAmout = capacity";
+		String hql = "from Room where apartment = ? and currentAmout = capacity order by name asc";
 		return (List<Room>)ht.find(hql,apartment);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Room> findByAptRoomName(Apartment apartment, String name) 
+	public List<Room> findByAptRoom(Apartment apartment, String keyword,int page,int pageSize) 
 	{
-		String hql = "from Room where apartment = ? and name like ?";
-		return (List<Room>)ht.find(hql,apartment,"%"+name+"%");
+		final String hql = "from Room where apartment = ? and (id like ? or name like ?) order by name asc";
+		final Apartment apt = apartment;
+		final String keywordParam = keyword;
+		final int pageParam = page;
+		final int pageSizeParam = pageSize;
+		List<Room> roomList = ht.execute(new HibernateCallback<List<Room>>()
+		{
+			public List<Room> doInHibernate(Session session) throws HibernateException 
+			{
+				Query query = session.createQuery(hql);
+				query.setParameter(0, apt);
+				query.setString(1, "%"+keywordParam+"%");
+				query.setString(2, "%"+keywordParam+"%");
+				query.setFirstResult((pageParam-1)*pageSizeParam); //计算分页起始位置
+				if(pageSizeParam > 0)
+				{
+					query.setMaxResults(pageSizeParam); //分页大小
+				}
+				List<Room> roomListRes = query.list();
+				return roomListRes;
+			}
+		});
+		return roomList;
+	}
+
+	@Override
+	public long getByApartmentSize(Apartment apartment) 
+	{
+		String hql = "select count(*) from Room where apartment = ?";
+		Long result = (Long) ht.find(hql,apartment).listIterator().next();
+		return result.longValue();
+	}
+
+	@Override
+	public long findByAptRoomSize(Apartment apartment, String keyword) 
+	{
+		String hql = "select count(*) from Room where apartment = ? and (id like ? or name like ?)";
+		Long result = (Long) ht.find(hql,apartment,"%"+keyword+"%", "%"+keyword+"%").listIterator().next();
+		return result.longValue();
 	}
 
 }

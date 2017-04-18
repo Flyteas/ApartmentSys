@@ -1,26 +1,7 @@
 /*
  * 常用JS方法
  */
-function manageSessionSubmit()
-{
-	if(!(document.getElementById("sessionId").value == "" || document.getElementById("sessionId").value == null))
-	{
-		document.getElementById("sessionForm").submit();		
-	}
-}
 
-function classSelectSubmit()
-{
-	if(!(document.getElementById("courseClassId").value == "" || document.getElementById("courseClassId").value == null))
-	{
-		document.getElementById("courseClassForm").submit();		
-	}
-}
-
-function manageCurrentSessionSubmit(url)
-{
-	location.href(url);
-}
 
 function timestampToDateStr(timestamp)
 {
@@ -28,128 +9,6 @@ function timestampToDateStr(timestamp)
 	var dateStr = date.toLocaleString();
 	document.write(dateStr);
 	return dateStr;
-}
-
-function delSessionSubmit(delUrl)
-{
-	if(confirm('确定删除会话?'))
-		{
-			location.href(delUrl);
-		}
-}
-
-function delStuRegInfoSubmit(delUrl,stuName)
-{
-	if(confirm('确定重置学生 '+stuName+' 的注册信息?\n重置注册信息后学生可使用微信重新注册'))
-	{
-		location.href(delUrl);
-	}
-}
-
-function delClassStuSubmit(delUrl,stuName)
-{
-	if(confirm('确定从班级删除学生 '+stuName+' ?'))
-	{
-		location.href(delUrl);
-	}
-}
-
-function delClsSubmit(delUrl,clsId)
-{
-	if(confirm('确定删除教学班 '+clsId+' ?'))
-	{
-		location.href(delUrl);
-	}
-}
-
-function stopSessionSubmit(stopUrl)
-{
-	if(confirm('确定停止会话?'))
-		{
-			location.href(stopUrl);
-		}
-}
-
-function addSessionSubmit(addUrl)
-{
-	location.href(addUrl);
-}
-
-function formCollapseCtrl(quesCollapseId,optionsCollapseId,ansMutilCollapseId,ansSingleCollapseId,ansTextCollapseId,sessionTypeSelectedId,quesTypeSelectedId) //控制题目表单的显示与隐藏
-{
-	var quesCollapse = document.getElementById(quesCollapseId);
-	var optionsCollapse = document.getElementById(optionsCollapseId);
-	var ansMutilCollapse = document.getElementById(ansMutilCollapseId);
-	var ansSingleCollapse = document.getElementById(ansSingleCollapseId);
-	var ansTextCollapse = document.getElementById(ansTextCollapseId);
-	var sessionTypeSelVal = document.getElementById(sessionTypeSelectedId).value;
-	var quesTypeSelVal = document.getElementById(quesTypeSelectedId).value;
-	if(sessionTypeSelVal == '2') //答题模式
-	{
-		quesCollapse.setAttribute("class", "collapse in");  //显示题目表单
-		if(quesTypeSelVal == '0') //单选模式
-		{
-			optionsCollapse.setAttribute("class", "collapse in");  //显示选项表单
-			ansMutilCollapse.setAttribute("class", "collapse");  //隐藏多选答案表单
-			ansSingleCollapse.setAttribute("class", "collapse in");  //显示单选答案表单
-			ansTextCollapse.setAttribute("class", "collapse"); //隐藏短回答答案表单
-		}
-		else if(quesTypeSelVal == '1') //多选模式
-		{
-			optionsCollapse.setAttribute("class", "collapse in");  //显示选项表单
-			ansMutilCollapse.setAttribute("class", "collapse in");  //显示多选答案表单
-			ansSingleCollapse.setAttribute("class", "collapse");  //隐藏单选答案表单
-			ansTextCollapse.setAttribute("class", "collapse"); //隐藏短回答答案表单
-		}
-		else
-		{
-			optionsCollapse.setAttribute("class", "collapse");  //隐藏选项表单
-			ansMutilCollapse.setAttribute("class", "collapse");  //显示多选答案表单
-			ansSingleCollapse.setAttribute("class", "collapse");  //隐藏单选答案表单
-			ansTextCollapse.setAttribute("class", "collapse in"); //隐藏短回答答案表单
-		}
-	}
-	else //非答题模式
-	{
-		quesCollapse.setAttribute("class", "collapse");  //隐藏题目表单
-		optionsCollapse.setAttribute("class", "collapse");  //隐藏选项表单
-		ansMutilCollapse.setAttribute("class", "collapse");  //隐藏多选答案表单
-		ansSingleCollapse.setAttribute("class", "collapse");  //隐藏单选答案表单
-	}
-}
-
-function checkSessionForm() //检查AddSession表单
-{
-	var sessionTypeVal = document.getElementById("sessionType").value
-	var sessionNameVal = document.getElementById("sessionName").value
-	var startTimePickerVal = document.getElementById("startTimePicker").value
-	var endTimePickerVal = document.getElementById("endTimePicker").value
-	var questionTitleVal = document.getElementById("questionTitle").value
-	
-	if(sessionNameVal == "" || sessionNameVal == null)
-	{
-		alert("会话名称不能为空!");
-		return false;
-	}
-	if(startTimePickerVal == "" || startTimePickerVal == null)
-	{
-		alert("开始时间不能为空!");
-		return false;
-	}
-	if(endTimePickerVal == "" || endTimePickerVal == null)
-	{
-		alert("结束时间不能为空!");
-		return false;
-	}
-	if(sessionTypeVal == 2) //答题模式
-	{
-		if(questionTitleVal == "" || questionTitleVal == null)
-		{
-			alert("题目详情不能为空!");
-			return false;
-		}
-	}
-	return true;
 }
 
 function checkPwdModify(form)
@@ -182,16 +41,6 @@ function checkPwdModify(form)
 	return true;
 }
 
-function checkClassStuAdd(form)
-{
-	if(form.stuId.value == null || form.stuId.value == "")
-	{
-		alert("学生学号不能为空");
-		return false;
-	}
-	return true;
-}
-
 function checkManagerAdd(form)
 {
 	if(form.username.value == null || form.username.value == "")
@@ -212,15 +61,6 @@ function checkManagerAdd(form)
 	return true;
 }
 
-function checkTeacherModify(form)
-{
-	if(form.techRealName.value == null || form.techRealName.value == "")
-	{
-		alert("真实姓名不能为空");
-		return false;
-	}
-	return true;
-}
 
 function modifyManagerSubmit(modifyUrl)
 {
@@ -243,55 +83,246 @@ function delManagerSelf(delUrl,realName) //删除当前登陆账号
 	}
 }
 
-function delStuSubmit(delUrl,stuName)
+function changePage(formId,pageInputId,page)
 {
-	if(confirm('确定删除学生 '+stuName+' ?'))
+	document.getElementById(pageInputId).value = page;
+	document.getElementById(formId).submit();
+}
+
+function modifyAptSubmit(modifyUrl)
+{
+	window.open(modifyUrl);
+}
+
+function roomAptSubmit(url)
+{
+	window.open(url);
+}
+
+function empAptSubmit(url)
+{
+	window.open(url);	
+}
+
+function rotaAptSubmit(url)
+{
+	window.open(url);
+}
+
+function stuAccAptSubmit(url)
+{
+	window.open(url);
+}
+
+function delAptSubmit(delUrl,aptName)
+{
+	if(confirm('确定删除公寓楼 '+aptName+' ?'))
 	{
 		location.href(delUrl);
 	}
 }
 
-function checkStudentModify(form)
+function checkAptAdd(form)
 {
-	if(form.stuName.value == null || form.stuName.value == "")
+	if(form.name.value == null || form.name.value == "")
 	{
-		alert("学生姓名不能为空");
+		alert("公寓名不能为空");
 		return false;
 	}
 	return true;
 }
 
-function checkClassAdd(form)
+function aptEmpSubmit(url)
 {
-	if(form.clsId.value == null || form.clsId.value == "")
-	{
-		alert("教学班ID不能为空");
-		return false;
-	}
-	if(form.courseName.value == null || form.courseName.value == "")
-	{
-		alert("课程名称不能为空");
-		return false;
-	}
-	if(form.teacherId.value == null || form.teacherId.value == "")
-	{
-		alert("任课教师ID不能为空");
-		return false;
-	}
-	return true;
+	window.open(url);
 }
 
-function checkClassModify(form)
+function rotaEmpSubmit(url)
 {
-	if(form.courseName.value == null || form.courseName.value == "")
+	window.open(url);
+}
+
+function modifyEmpSubmit(url)
+{
+	window.open(url);
+}
+
+function delEmpSubmit(url,empName)
+{
+	if(confirm('确定删除员工 '+empName+' ?'))
 	{
-		alert("课程名称不能为空");
+		location.href(url);
+	}
+}
+
+function empStateChange(stateId,depInputId)
+{
+	var state = document.getElementById(stateId).value;
+	var depInput = document.getElementById(depInputId);
+	if(state == '0') //在职
+	{
+		depInput.setAttribute("class", "collapse"); //隐藏离职时间输入框
+	}
+	else
+	{
+		depInput.setAttribute("class", "collapse in"); //显示
+	}
+}
+
+function checkEmpAdd(form)
+{
+	if(form.empId.value == null || form.empId.value == "")
+	{
+		alert("工号不能为空");
 		return false;
 	}
-	if(form.teacherId.value == null || form.teacherId.value == "")
+	if(form.name.value == null || form.name.value == "")
 	{
-		alert("任课教师ID不能为空");
+		alert("姓名不能为空");
 		return false;
 	}
-	return true;
+	return true;	
+}
+
+function roomStuSubmit(url)
+{
+	window.open(url);
+}
+
+function modifyStuSubmit(url)
+{
+	window.open(url);
+}
+
+function delStuSubmit(url,name)
+{
+	if(confirm('确定删除学生 '+name+' ?'))
+	{
+		location.href(url);
+	}
+}
+
+function checkStuAdd(form)
+{
+	if(form.stuId.value == null || form.stuId.value == "")
+	{
+		alert("学号不能为空");
+		return false;
+	}
+	if(form.name.value == null || form.name.value == "")
+	{
+		alert("姓名不能为空");
+		return false;
+	}
+	return true;	
+}
+
+function roomSubmit(url)
+{
+	window.open(url);
+}
+
+function modifyRoomSubmit(url)
+{
+	window.open(url);
+}
+
+function delRoomSubmit(url,name)
+{
+	if(confirm('确定删除房间 '+name+' ?'))
+	{
+		location.href(url);
+	}
+}
+
+function modifyRecSubmit(url)
+{
+	window.open(url);
+}
+
+function delRecSubmit(url,id)
+{
+	if(confirm('确定删除记录 '+id+' ?'))
+	{
+		location.href(url);
+	}
+}
+
+function modifyRoomDetailSubmit(url)
+{
+	window.open(url);
+}
+
+function delRoomDetailSubmit(url,id)
+{
+	if(confirm('确定删除记录 '+id+' ?'))
+	{
+		location.href(url);
+	}
+}
+
+function roomDetailStateChange(stateId,endInputId)
+{
+	var state = document.getElementById(stateId).value;
+	var endInput = document.getElementById(endInputId);
+	if(state == '0') //正在住宿
+	{
+		endInput.setAttribute("class", "collapse"); //隐藏退住时间输入框
+	}
+	else
+	{
+		endInput.setAttribute("class", "collapse in"); //显示
+	}
+}
+
+function modifyStudentRoomSubmit(url)
+{
+	window.open(url);
+}
+
+function delStudentRoomSubmit(url,id)
+{
+	if(confirm('确定删除记录 '+id+' ?'))
+	{
+		location.href(url);
+	}
+}
+
+function rotaAptEmpSubmit(url)
+{
+	window.open(url);
+}
+
+function delAptEmpSubmit(url,id)
+{
+	if(confirm('确定删除记录 '+id+' ?'))
+	{
+		location.href(url);
+	}
+}
+
+function modifyRotaSubmit(url)
+{
+	window.open(url);
+}
+
+function delRotaSubmit(url,id)
+{
+	if(confirm('确定删除记录 '+id+' ?'))
+	{
+		location.href(url);
+	}
+}
+
+function rotaEmpAptSubmit(url)
+{
+	window.open(url);
+}
+
+function delEmpAptSubmit(url,id)
+{
+	if(confirm('确定删除记录 '+id+' ?'))
+	{
+		location.href(url);
+	}
 }

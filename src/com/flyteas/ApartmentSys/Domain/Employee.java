@@ -33,14 +33,16 @@ public class Employee
 		
 	}
 	
-	public Employee(String empId,String name,int sex,String phone)
+	public Employee(String empId,String name,int sex,String phone,int state,long indTime,long depTime)
 	{
 		createTime = System.currentTimeMillis(); //创建时间
-		state = 0;
 		this.empId = empId;
 		this.name = name;
 		this.sex = sex;
 		this.phone = phone;
+		this.state = state;
+		this.inductionTime = indTime;
+		this.departureTime = depTime;
 	}
 
 	/* setter和getter */

@@ -41,12 +41,12 @@ public class StuAccessRecordDaoImpl implements StuAccessRecordDao
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public StuAccessRecord getLastByStudent(Student student) 
+	public StuAccessRecord getLastByStudent(Student student,Apartment apartment) 
 	{
 		StuAccessRecord lastRec = null; //最后一条记录
-		String hql = "from StuAccessRecord where student = ? order by accessTime desc"; //按accessTime降序排序
+		String hql = "from StuAccessRecord where student = ? and apartment = ? order by accessTime desc"; //按accessTime降序排序
 		ht.setMaxResults(1); //设置获取记录的最大数 类似MySQL中的 limit
-		List<StuAccessRecord> recList = (List<StuAccessRecord>) ht.find(hql, student);
+		List<StuAccessRecord> recList = (List<StuAccessRecord>) ht.find(hql, student,apartment);
 		if(!recList.isEmpty()) //有记录
 		{
 			lastRec = recList.get(0);
@@ -82,6 +82,7 @@ public class StuAccessRecordDaoImpl implements StuAccessRecordDao
 	{
 		try
 		{
+			ht.clear();
 			ht.update(stuAccessRecord);
 		}
 		catch(HibernateException e)

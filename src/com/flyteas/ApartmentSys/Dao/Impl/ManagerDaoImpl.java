@@ -3,8 +3,11 @@ package com.flyteas.ApartmentSys.Dao.Impl;
 import java.util.List;
 
 import org.hibernate.HibernateException;
+import org.hibernate.Query;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.hibernate4.HibernateCallback;
 import org.springframework.orm.hibernate4.HibernateTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -147,4 +150,72 @@ public class ManagerDaoImpl implements ManagerDao
 		String hql = "from Manager where username like ? or realName like ?";
 		return (List<Manager>)ht.find(hql,"%"+keyword+"%", "%"+keyword+"%");
 	}
+
+	@Override
+	public List<Manager> findByUnameRname(String keyword, int page, int pageSize) 
+	{
+		final String hql = "from Manager where username like ? or realName like ?";
+		final String keywordParam = keyword;
+		final int pageParam = page;
+		final int pageSizeParam = pageSize;
+		List<Manager> managerList = ht.execute(new HibernateCallback<List<Manager>>()
+		{
+			public List<Manager> doInHibernate(Session session) throws HibernateException 
+			{
+				Query query = session.createQuery(hql);
+				query.setString(0, "%"+keywordParam+"%");
+				query.setString(1, "%"+keywordParam+"%");
+				query.setFirstResult((pageParam-1)*pageSizeParam); //计算分页起始位置
+				if(pageSizeParam > 0)
+				{
+					query.setMaxResults(pageSizeParam); //分页大小
+				}
+				@SuppressWarnings("unchecked")
+				List<Manager> managerListRes = query.list();
+				return managerListRes;
+			}
+		});
+		return managerList;
+	}
+	
+	@Override
+	public long  getAllSize() 
+	{
+		String hql = "select count(*) from Manager";
+		Long result = (Long) ht.find(hql).listIterator().next();
+		return result.intValue();
+	}
+
+	@Override
+	public long findByUnameRnameSize(String keyword) 
+	{
+		String hql = "select count(*) from Manager where username like ? or realName like ?";
+		Long result = (Long) ht.find(hql,"%"+keyword+"%", "%"+keyword+"%").listIterator().next();
+		return result.intValue();
+	}
+
+	@Override
+	public List<Manager> getAll(int page, int pageSize) 
+	{
+		final String hql = "from Manager";
+		final int pageParam = page;
+		final int pageSizeParam = pageSize;
+		List<Manager> managerList = ht.execute(new HibernateCallback<List<Manager>>()
+		{
+			public List<Manager> doInHibernate(Session session) throws HibernateException 
+			{
+				Query query = session.createQuery(hql);
+				query.setFirstResult((pageParam-1)*pageSizeParam); //计算分页起始位置
+				if(pageSizeParam > 0)
+				{
+					query.setMaxResults(pageSizeParam); //分页大小
+				}
+				@SuppressWarnings("unchecked")
+				List<Manager> managerListRes = query.list();
+				return managerListRes;
+			}
+		});
+		return managerList;
+	}
+
 }

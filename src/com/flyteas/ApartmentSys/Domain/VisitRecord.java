@@ -38,9 +38,9 @@ public class VisitRecord
 		
 	}
 	
-	public VisitRecord(String visitorName,int visitorSex,String visitorPhone,String visitorIdCard,Room visitRoom, long enterTime)
+	public VisitRecord(String visitorName,int visitorSex,String visitorPhone,String visitorIdCard,Room visitRoom, long enterTime, long leaveTime)
 	{
-		id = MD5Encryptor.md5Encrypt(String.valueOf(System.nanoTime())); //对当前nano time进行MD5摘要得出ID
+		id = MD5Encryptor.md5Encrypt(String.valueOf(System.nanoTime())).substring(8, 24); //对当前nano time进行MD5摘要并取中间16位得出ID
 		createTime = System.currentTimeMillis(); //创建时间
 		this.visitorName = visitorName;
 		this.visitorSex = visitorSex;
@@ -48,7 +48,7 @@ public class VisitRecord
 		this.visitorIdCard = visitorIdCard;
 		this.visitRoom = visitRoom;
 		this.enterTime = enterTime;
-		this.leaveTime = 0;
+		this.leaveTime = leaveTime;
 	}
 
 	/* setter和getter */

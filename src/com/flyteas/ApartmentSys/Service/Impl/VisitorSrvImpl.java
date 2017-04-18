@@ -133,4 +133,24 @@ public class VisitorSrvImpl implements VisitorSrv
 		return 0;
 	}
 
+	@Override
+	public List<VisitRecord> searchByNameOrPhone(String keyword, int page,int pageSize) 
+	{
+		if(keyword.isEmpty())
+		{
+			return recDao.getAll(page, pageSize);
+		}
+		return recDao.findByNameOrPhone(keyword, page, pageSize);
+	}
+
+	@Override
+	public long searchByNameOrPhoneSize(String keyword) 
+	{
+		if(keyword.isEmpty())
+		{
+			return recDao.getAllSize();
+		}
+		return recDao.findByNameOrPhoneSize(keyword);
+	}
+
 }

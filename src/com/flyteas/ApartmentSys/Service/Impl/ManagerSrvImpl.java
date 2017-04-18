@@ -11,7 +11,7 @@ import com.flyteas.ApartmentSys.Domain.Manager;
 import com.flyteas.ApartmentSys.Service.ManagerSrv;
 import com.flyteas.ApartmentSys.Util.MD5Encryptor;
 
-/* 系统管理业务接口 */
+/* 系统管理业务实现 */
 
 @Service
 public class ManagerSrvImpl implements ManagerSrv
@@ -97,6 +97,26 @@ public class ManagerSrvImpl implements ManagerSrv
 			return managerDao.getAll();
 		}
 		return managerDao.findByUnameRname(keyword);
+	}
+	
+	@Override
+	public List<Manager> findByUnameRname(String keyword, int page, int pageSize) 
+	{
+		if(keyword.isEmpty()) //搜索关键字为空，返回所有记录 分页
+		{
+			return managerDao.getAll(page, pageSize);
+		}
+		return managerDao.findByUnameRname(keyword, page, pageSize); //返回查询结果 分页
+	}
+
+	@Override
+	public long findByUnameRnameSize(String keyword) 
+	{
+		if(keyword.isEmpty()) //搜索关键字为空则返回所有记录数
+		{
+			return managerDao.getAllSize();
+		}
+		return managerDao.findByUnameRnameSize(keyword); //获取查询结果数量
 	}
 
 	@Override

@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -31,6 +32,12 @@
 						<li>
 							 <a href="Student.do">学生管理</a>
 						</li>
+						<li>
+							 <a href="VisitRecord.do">访客管理</a>
+						</li>
+						<li>
+							 <a href="StudentAccess.do">门禁管理</a>
+						</li>
 						<c:if test="${user.role == 0}">
 						<li class="active">
 							 <a href="Manager.do">管理员管理</a>
@@ -45,7 +52,7 @@
 									 <a href="UserInfo.do">个人资料</a>
 								</li>
 								<li>
-									 <a href="PwdMidify.do">修改密码</a>
+									 <a href="PwdModify.do">修改密码</a>
 								</li>
 								<li class="divider">
 								</li>
@@ -64,7 +71,7 @@
 		<div class="col-md-3 column">
 		</div>
 		<div class="col-md-6 column">
-			<form class="form-horizontal" role="form" action="Manager.do" method="post">
+			<form class="form-horizontal" role="form" id="managerForm" action="Manager.do" method="post">
 				<div class="form-group">
 					 <label class="col-sm-3 control-label" for="inputUnameOrName">用户名或姓名</label>
 					<div class="col-sm-7">
@@ -97,6 +104,9 @@
 		</div>
 		<div class="col-md-10 column">
 			<label for="TableName">管理员列表</label><br>
+			<c:if test="${page != null}" >
+			<label for="TableCount">记录数: <c:out value="${resultCount}" />&nbsp;&nbsp;&nbsp;<c:out value="${page}" />/<c:out value="${pageCount}" />页</label><br>
+			</c:if>
 			<table class="table table-bordered">
 				<thead>
 					<tr>
@@ -153,6 +163,42 @@
 					</c:forEach>	
 				</tbody>
 			</table>
+			<c:if test="${page != null}" >
+			<form class="form-horizontal" role="form" id="managerPageForm" action="Manager.do" method="post" >
+				<div class="form-group">
+					<div class="col-sm-7">
+						<input class="form-control" id="unameOrNamePage" name="unameOrName" type="hidden" value="<c:out value="${unameOrName}" />"/>
+						<input class="form-control" id="page" name="page" type="hidden" />
+					</div>
+				</div>
+			</form>
+			<div class="col-md-offset-9 col-md-4">
+				<ul class="pagination">
+					<fmt:parseNumber var="pageTmp" integerOnly="true" value="${(page-0.5)/pageLength}" />
+					<c:set var="pageStart" value="${pageTmp * pageLength + 1}" />
+					<c:if test="${page > pageLength}">
+						<li><a href="javascript:changePage('managerPageForm','page',<c:out value="${pageStart-1}"/>)">&laquo;</a></li>
+					</c:if>
+					<c:if test="${(pageStart + pageLength - 1) > pageCount}">
+						<c:set var="pageEnd" value="${pageCount}" />
+					</c:if>
+					<c:if test="${(pageStart + pageLength - 1) <= pageCount}">
+						<c:set var="pageEnd" value="${pageStart + pageLength - 1}" />
+					</c:if>
+					<c:forEach var="linkPage" begin="${pageStart}" end="${pageEnd}" step="1">
+						<c:if test="${linkPage == page}">
+							<li class="active"><a href="javascript:changePage('managerPageForm','page',<c:out value="${linkPage}"/>);"><c:out value="${linkPage}"/></a></li>
+						</c:if>
+						<c:if test="${linkPage != page}">
+							<li><a href="javascript:changePage('managerPageForm','page',<c:out value="${linkPage}"/>)"><c:out value="${linkPage}"/></a></li>
+						</c:if>
+					</c:forEach>
+					<c:if test="${pageEnd < pageCount}">
+						<li><a href="javascript:changePage('managerPageForm','page',<c:out value="${pageStart + pageLength}"/>)">&raquo;</a></li>
+					</c:if>
+				</ul>
+			</div>
+			</c:if>
       		<c:if test="${managers != null && fn:length(managers) == 0}">
       		<div class="alert alert-danger" role="alert" id="noManagerAlert">
         		<strong>搜索结果为空</strong>

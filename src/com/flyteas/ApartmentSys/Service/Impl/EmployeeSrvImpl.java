@@ -31,12 +31,6 @@ public class EmployeeSrvImpl implements EmployeeSrv
 	private RotaDao rotaDao;
 
 	@Override
-	public List<Employee> getAllEmp() 
-	{
-		return empDao.getAll();
-	}
-
-	@Override
 	public List<Employee> getOnJobEmp() 
 	{
 		return empDao.findByEmpState(0);
@@ -92,9 +86,26 @@ public class EmployeeSrvImpl implements EmployeeSrv
 
 	@Transactional
 	@Override
-	public int delEmo(String empId) 
+	public int delEmp(String empId) 
 	{
-		if(!empDao.delete(empId)) //员工不存在
+		Employee emp = empDao.getByEmpId(empId);
+		if(emp == null)
+		{
+			return -1;
+		}
+		List<ApartmentEmp> aptEmpList = aptEmpDao.getByEmp(emp, 1, 0); //获取所有记录
+		for(int i=0;i<aptEmpList.size();i++) //删除全部
+		{
+			ApartmentEmp aptEmp = aptEmpList.get(i);
+			List<Rota> rotaList = rotaDao.getByApartmentEmp(aptEmp);
+			for(int j=0;j<rotaList.size();j++) //删除全部
+			{
+				Rota rota = rotaList.get(j);
+				rotaDao.delById(rota.getId());
+			}
+			aptEmpDao.delById(aptEmp.getId());
+		}
+		if(!empDao.delete(empId)) //删除失败
 		{
 			return -1;
 		}
@@ -206,16 +217,6 @@ public class EmployeeSrvImpl implements EmployeeSrv
 		return -3;
 	}
 
-	@Transactional
-	@Override
-	public int delRota(String rotaId) 
-	{
-		if(!rotaDao.delById(rotaId)) //删除失败
-		{
-			return -1;
-		}
-		return 0;
-	}
 
 	@Override
 	public List<Employee> getEmpByApt(String aptId) 
@@ -265,15 +266,63 @@ public class EmployeeSrvImpl implements EmployeeSrv
 		return empList;
 	}
 
-	@Transactional
 	@Override
-	public int delAptEmp(String aptEmpId) 
+	public List<Employee> getAll() 
 	{
-		if(!aptEmpDao.delById(aptEmpId)) //删除失败
+		return empDao.getAll();
+	}
+
+	@Override
+	public long getAllSize() 
+	{
+		return empDao.getAllSize();
+	}
+
+	@Override
+	public List<Employee> getAll(int page, int pageSize) 
+	{
+		return empDao.getAll(page, pageSize);
+	}
+
+	@Override
+	public List<Employee> searchByIdOrName(String keyword, int page, int pageSize)
+	{
+		if(keyword.isEmpty())
 		{
-			return -1;
+			return empDao.getAll(page, pageSize);
 		}
-		return 0;
+		return empDao.findByIdOrName(keyword, page, pageSize);
+	}
+	
+	@Override
+	public List<Employee> searchByIdOrNameAptId(String aptId,String keyword)
+	{
+		Apartment apt = aptDao.getById(aptId);
+		if(apt == null) //公寓楼不存在
+		{
+			return null;
+		}
+		List<ApartmentEmp> aptEmpList = aptEmpDao.getByApartment(apt);
+		List<Employee> empList = new ArrayList<Employee>();
+		for(int i=0;i<aptEmpList.size();i++) //检索关键字
+		{
+			Employee emp = aptEmpList.get(i).getEmployee();
+			if(emp.getEmpId().contains(keyword) || emp.getName().contains(keyword) || emp.getPhone().contains(keyword)) //如果检索到
+			{
+				empList.add(emp); //添加到结果
+			}
+		}
+		return empList;
+	}
+
+	@Override
+	public long searchByIdOrNameSize(String keyword) 
+	{
+		if(keyword.isEmpty())
+		{
+			return empDao.getAllSize();
+		}
+		return empDao.findByIdOrNameSize(keyword);
 	}
 
 }

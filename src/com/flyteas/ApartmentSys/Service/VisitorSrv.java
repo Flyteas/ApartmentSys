@@ -13,6 +13,8 @@ public interface VisitorSrv
 	public List<VisitRecord> searchByName(String name); //根据名字搜索
 	public List<VisitRecord> searchByIdCard(String idCard); //根据证件号搜索
 	public List<VisitRecord> searchByPhone(String phone); //根据电话搜索
+	public List<VisitRecord> searchByNameOrPhone(String keyword,int page,int pageSize); //根据姓名电话搜索 分页
+	public long searchByNameOrPhoneSize(String keyword); //根据姓名电话搜索 结果数
 	public int addRec(VisitRecord rec); //添加访客记录 0成功 -1房间不存在 -2数据库错误
 	public int modifyRec(VisitRecord rec); //修改访客记录 0成功 -1记录不存在 -2房间不存在 -3数据库错误
 	public int delRec(String recId); //删除访客记录 0成功 -1记录不存在 -2数据库错误

@@ -24,6 +24,9 @@ public class ManagerCtrl
 	@Autowired
 	private ManagerSrv managerSrv;
 	
+	private int pageSize = 20; //每页大小
+	private int pageLength = 5; //翻页表长度
+	
 	private boolean loginCheck(HttpSession session) //检查是否处于已登录状态
 	{
 		Object manager;
@@ -204,6 +207,8 @@ public class ManagerCtrl
 		}
 		if(managerSrv.modifyProfile(user))
 		{
+			session.removeAttribute("user");
+			session.setAttribute("user", user);
 			msg = "0"; //修改成功
 		}
 		else
@@ -331,11 +336,42 @@ public class ManagerCtrl
 			return mv;
 		}
 		String unameOrName = (String)request.getParameter("unameOrName");
-		if(unameOrName != null)
+		if(unameOrName == null) //请求错误
 		{
-			List<Manager> managers = managerSrv.findByUnameRname(unameOrName);
-			mv.addObject("managers",managers);
+			mv.setViewName("Manager");
+			return mv;
 		}
+		/* 做分页 */
+		String pageStr = (String)request.getParameter("page");
+		int page = 1;
+		if(pageStr != null && !pageStr.isEmpty()) //page有效
+		{
+			page = Integer.valueOf(pageStr);
+			if(page <= 0) //页数非法
+			{
+				page = 1;
+			}
+		}
+		long resultCount = managerSrv.findByUnameRnameSize(unameOrName); //获取查询记录数
+		
+		
+		long pageCount = resultCount/pageSize;
+		if(resultCount%pageSize != 0) //如果不整除，则多一页
+		{
+			pageCount++;
+		}
+		if(resultCount == 0)
+		{
+			page = 0;
+		}
+		List<Manager> managers = managerSrv.findByUnameRname(unameOrName,page,pageSize);
+		mv.addObject("unameOrName",unameOrName);
+		mv.addObject("page",page);
+		mv.addObject("pageSize",pageSize);
+		mv.addObject("resultCount",resultCount);
+		mv.addObject("pageCount",pageCount);
+		mv.addObject("managers",managers);
+		mv.addObject("pageLength",pageLength);
 		mv.setViewName("Manager");
 		return mv;
 	}
@@ -477,6 +513,7 @@ public class ManagerCtrl
 		mv.addObject("modifyManager",modifyManager);
 		mv.addObject("lastLoginTimeStr",lastLoginTimeStr);
 		mv.addObject("createTimeStr",createTimeStr);
+		mv.setViewName("ManagerModify");
 		return mv;
 	}
 	
@@ -554,11 +591,12 @@ public class ManagerCtrl
 		mv.addObject("lastLoginTimeStr",lastLoginTimeStr);
 		mv.addObject("createTimeStr",createTimeStr);
 		mv.addObject("msg",msg);
+		mv.setViewName("ManagerModify");
 		return mv;
 	}
 	
 	@RequestMapping(value = { "/ManagerDel.do" }, method = RequestMethod.GET)
-	public ModelAndView delTeacher(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception //管理员删除
+	public ModelAndView delManager(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception //管理员删除
 	{
 		request.setCharacterEncoding("UTF-8");
 		ModelAndView mv = new ModelAndView();

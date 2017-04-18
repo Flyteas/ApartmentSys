@@ -11,9 +11,13 @@ import com.flyteas.ApartmentSys.Domain.Student;
 public interface StuRoomDao 
 {
 	public StuRoom getById(String id); //通过ID获取
-	public List<StuRoom> getByStudent(Student student); //获取某学生住宿信息
+	public List<StuRoom> getByStudent(Student student, int page,int pageSize); //获取某学生住宿信息 分页
+	public long getByStudentSize(Student student); //获取某学生住宿信息结果数量
+	public List<StuRoom> getByStudentState(Student student,int state, int page,int pageSize); //获取某学生特定状态住宿信息 分页
+	public long getByStudentStateSize(Student student,int state); //获取某学生特定状态住宿信息结果数
 	public List<StuRoom> getCurrByRoom(Room room); //获取某房间当前住宿信息
 	public List<StuRoom> getAllByRoom(Room room); //获取某房间所有住宿信息
+	public List<StuRoom> getExitByRoom(Room room); //获取某房间已退住宿信息
 	public List<StuRoom> getByApartment(Apartment apartment); //获取某公寓楼所有住宿信息
 	public boolean add(StuRoom stuRoom); //添加
 	public boolean saveModify(StuRoom stuRoom); //保存修改

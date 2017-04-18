@@ -30,7 +30,7 @@ public class ApartmentEmp
 	
 	public ApartmentEmp(Employee employee,Apartment apartment)
 	{
-		id = MD5Encryptor.md5Encrypt(String.valueOf(System.nanoTime())); //对当前nano time进行MD5摘要得出ID
+		id = MD5Encryptor.md5Encrypt(String.valueOf(System.nanoTime())).substring(8, 24); //对当前nano time进行MD5摘要并取中间16位得出ID
 		createTime = System.currentTimeMillis(); //创建时间
 		this.employee = employee;
 		this.apartment = apartment;

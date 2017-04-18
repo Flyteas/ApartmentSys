@@ -18,8 +18,6 @@ public class StuRoom
 	private String id; //住房信息ID
 	@ManyToOne
 	private Room room; //所在房间
-	@Column
-	private int bedId; //床位序号
 	@ManyToOne
 	private Student student; //住房信息对应的学生
 	@Column
@@ -36,15 +34,15 @@ public class StuRoom
 		
 	}
 	
-	public StuRoom(Room room,int bedId,Student student,long liveStartTime)
+	public StuRoom(Room room,Student student,int state,long liveStartTime,long liveEndTime)
 	{
-		id = MD5Encryptor.md5Encrypt(String.valueOf(System.nanoTime())); //对当前nano time进行MD5摘要得出ID
+		id = MD5Encryptor.md5Encrypt(String.valueOf(System.nanoTime())).substring(8, 24); //对当前nano time进行MD5摘要并取中间16位得出ID
 		createTime = System.currentTimeMillis(); //创建时间
 		this.room = room;
-		this.bedId = bedId;
 		this.student = student;
-		this.state = 0;
+		this.state = state;
 		this.liveStartTime = liveStartTime;
+		this.liveEndTime = liveEndTime;
 	}
 
 	/* setter和getter */
@@ -62,14 +60,6 @@ public class StuRoom
 
 	public void setRoom(Room room) {
 		this.room = room;
-	}
-
-	public int getBedId() {
-		return bedId;
-	}
-
-	public void setBedId(int bedId) {
-		this.bedId = bedId;
 	}
 
 	public Student getStudent() {
